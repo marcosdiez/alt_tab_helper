@@ -28,7 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.labelDescription = new System.Windows.Forms.Label();
+            this.myNotifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.SuspendLayout();
             // 
             // labelDescription
@@ -41,12 +44,20 @@
             this.labelDescription.Text = "label1";
             this.labelDescription.Click += new System.EventHandler(this.labelDescription_Click);
             // 
+            // myNotifyIcon
+            // 
+            this.myNotifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("myNotifyIcon.Icon")));
+            this.myNotifyIcon.Text = "Alt Tab Helper";
+            this.myNotifyIcon.Visible = true;
+            this.myNotifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.myNotifyIcon_MouseDoubleClick);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(583, 391);
             this.Controls.Add(this.labelDescription);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainWindow";
             this.Text = "Alt Tab Helper";
             this.Load += new System.EventHandler(this.MainWindow_Load);
@@ -58,6 +69,7 @@
 
         #endregion
         private System.Windows.Forms.Label labelDescription;
+        private System.Windows.Forms.NotifyIcon myNotifyIcon;
     }
 }
 

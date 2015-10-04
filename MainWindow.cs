@@ -14,22 +14,16 @@ namespace AltTabHelperV2
     public partial class MainWindow : Form
     {
 
+
         public MainWindow()
         {
             InitializeComponent();
-        }
-
-        private void MainWindow_Resize(object sender, EventArgs e)
-        {
-            labelDescription.Top = 0;
-            labelDescription.Left = 0;
-            labelDescription.Width = ClientRectangle.Width;
-            labelDescription.Height = ClientRectangle.Height;
+            this.WindowState = FormWindowState.Minimized;
+            mimimizeMe();
         }
 
         private void MainWindow_Load(object sender, EventArgs e)
         {
-            MainWindow_Resize(sender, e);
 
             labelDescription.Text =
                 @"
@@ -53,5 +47,46 @@ The app is open source: https://github.com/marcosdiez/alt_tab_helper
         {
             Process.Start("https://github.com/marcosdiez/alt_tab_helper");
         }
+
+        private void myNotifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            this.Show();
+            this.WindowState = FormWindowState.Normal;
+        }
+
+        private void mimimizeMe()
+        {
+            myNotifyIcon.Visible = true;
+            this.ShowInTaskbar = false;
+            this.Hide();
+        }
+
+        private void MainWindow_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            myNotifyIcon.Visible = false;
+            Environment.Exit(0);
+        }
+
+        private void MainWindow_Resize(object sender, EventArgs e)
+        {
+            if (FormWindowState.Minimized == this.WindowState)
+            {
+                mimimizeMe();
+            }
+
+            else if (FormWindowState.Normal == this.WindowState)
+            {
+
+                labelDescription.Top = 0;
+                labelDescription.Left = 0;
+                labelDescription.Width = ClientRectangle.Width;
+                labelDescription.Height = ClientRectangle.Height;
+
+                myNotifyIcon.Visible = false;
+                this.ShowInTaskbar = true;
+            }
+        }
+
+
     }
 }
