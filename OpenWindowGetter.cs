@@ -54,12 +54,12 @@ namespace AltTabHelperV2
             return builder2.ToString();
         }
 
-        public static string GetCurrentProcessName()
+        private static string GetCurrentProcessName()
         {
             return GetProcessNameFromPid(GetCurrentPid());
         }
 
-        public static string GetProcessNameFromPid(uint pid)
+        private static string GetProcessNameFromPid(uint pid)
         {
             var maxSize = 1000;
             var output = new StringBuilder(maxSize);
@@ -71,36 +71,12 @@ namespace AltTabHelperV2
             return output.ToString();
         }
 
-        public static uint GetCurrentPid()
+        private static uint GetCurrentPid()
         {
             var windowInForeground = GetForegroundWindow();
             uint pid;
             var result = GetWindowThreadProcessId(windowInForeground, out pid);
             return pid;
-        }
-
-        public static IDictionary<HWND, string> GetOpenWindows2()
-        {
-            HWND shellWindow = GetShellWindow();
-            Dictionary<HWND, string> windows = new Dictionary<HWND, string>();
-
-            EnumWindows(delegate (HWND hWnd, int lParam)
-            {
-                if (hWnd == shellWindow) return true;
-                if (!IsWindowVisible(hWnd)) return true;
-
-                int length = GetWindowTextLength(hWnd);
-                if (length == 0) return true;
-
-                StringBuilder builder = new StringBuilder(length);
-                GetWindowText(hWnd, builder, length + 1);
-
-                windows[hWnd] = builder.ToString();
-                return true;
-
-            }, 0);
-
-            return windows;
         }
 
         private delegate bool EnumWindowsProc(HWND hWnd, int lParam);
@@ -142,6 +118,38 @@ namespace AltTabHelperV2
         // Retrieves a handle to the foreground window (the window with which the user is currently working). The system assigns a slightly higher priority to the thread that creates the foreground window than it does to other threads. 
         [DllImport("user32.dll", SetLastError = true)]
         public static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll", SetLastError = true)]
+        internal static extern bool ShowWindowAsync(IntPtr windowHandle, int nCmdShow);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool ShowWindow(IntPtr hWnd, uint windowStyle);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern int SetActiveWindow(IntPtr hWnd);
+
+
+        // The return value is the handle to the active window attached to the calling thread's message queue. Otherwise, the return value is NULL. 
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr GetActiveWindow();
+
+        [DllImport("user32.dll")]
+        public static extern bool IsIconic(IntPtr hwnd);
+
+        [DllImport("user32.dll")]
+        public static extern bool IsZoomed(IntPtr hwnd);
+
+        public enum ShowWindowEnum
+        {
+            Hide = 0,
+            ShowNormal = 1, ShowMinimized = 2, ShowMaximized = 3,
+            Maximize = 3, ShowNormalNoActivate = 4, Show = 5,
+            Minimize = 6, ShowMinNoActivate = 7, ShowNoActivate = 8,
+            Restore = 9, ShowDefault = 10, ForceMinimized = 11
+        };
 
     }
 

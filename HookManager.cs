@@ -7,7 +7,8 @@ using System.Windows.Forms;
 
 namespace AltTabHelperV2
 {
-    public partial class Hook
+    // most of this code is from http://www.codeproject.com/Articles/7294/Processing-Global-Mouse-and-Keyboard-Hooks-in-C
+    public partial class HookManager
     {
         /// <summary>
         /// This field is not objectively needed but we need to keep a reference on a delegate which will be 
@@ -60,53 +61,13 @@ namespace AltTabHelperV2
 
                     if ((Keys)MyKeyboardHookStruct.VirtualKeyCode == Keys.Oem3) // 0xC0 -> `~
                     {
-                        bool isDownShift = ((GetKeyState(VK_SHIFT) & 0x80) == 0x80 ? true : false);
-
-                        ProgramManager.EventIsTriggered(isDownShift);
-
-
-
+                        var isDownShift = ((GetKeyState(VK_SHIFT) & 0x80) == 0x80 ? true : false);
+                        ProcessKeyboardEvent.EventIsTriggered(isDownShift);
                         return -1;
                     }
                 }
 
-                //// raise KeyPress
-                //if (s_KeyPress != null && wParam == WM_KEYDOWN)
-                //{
-                //    bool isDownShift = ((GetKeyState(VK_SHIFT) & 0x80) == 0x80 ? true : false);
-                //    bool isDownCapslock = (GetKeyState(VK_CAPITAL) != 0 ? true : false);
-
-                //    byte[] keyState = new byte[256];
-                //    GetKeyboardState(keyState);
-                //    byte[] inBuffer = new byte[2];
-                //    if (ToAscii(MyKeyboardHookStruct.VirtualKeyCode,
-                //              MyKeyboardHookStruct.ScanCode,
-                //              keyState,
-                //              inBuffer,
-                //              MyKeyboardHookStruct.Flags) == 1)
-                //    {
-                //        char key = (char)inBuffer[0];
-                //        if ((isDownCapslock ^ isDownShift) && Char.IsLetter(key)) key = Char.ToUpper(key);
-                //        KeyPressEventArgs e = new KeyPressEventArgs(key);
-                //        s_KeyPress.Invoke(null, e);
-                //        handled = handled || e.Handled;
-                //    }
-                //}
-
-                //// raise KeyUp
-                //if (s_KeyUp != null && (wParam == WM_KEYUP || wParam == WM_SYSKEYUP))
-                //{
-                //    Keys keyData = (Keys)MyKeyboardHookStruct.VirtualKeyCode;
-                //    KeyEventArgs e = new KeyEventArgs(keyData);
-                //    s_KeyUp.Invoke(null, e);
-                //    handled = handled || e.Handled;
-                //}
-
             }
-
-            ////if event handled in application do not handoff to other listeners
-            //if (handled)
-            //    return -1;
 
             //forward to other application
             return CallNextHookEx(s_KeyboardHookHandle, nCode, wParam, lParam);

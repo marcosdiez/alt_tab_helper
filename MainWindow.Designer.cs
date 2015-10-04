@@ -28,39 +28,36 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.listBoxApps = new System.Windows.Forms.ListBox();
+            this.labelDescription = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // listBoxApps
+            // labelDescription
             // 
-            this.listBoxApps.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.listBoxApps.FormattingEnabled = true;
-            this.listBoxApps.ItemHeight = 14;
-            this.listBoxApps.Location = new System.Drawing.Point(0, 0);
-            this.listBoxApps.Name = "listBoxApps";
-            this.listBoxApps.Size = new System.Drawing.Size(245, 186);
-            this.listBoxApps.TabIndex = 0;
-            this.listBoxApps.Enter += new System.EventHandler(this.listBoxApps_Enter);
-            this.listBoxApps.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listBoxApps_MouseDoubleClick);
+            this.labelDescription.AutoSize = true;
+            this.labelDescription.Location = new System.Drawing.Point(74, 225);
+            this.labelDescription.Name = "labelDescription";
+            this.labelDescription.Size = new System.Drawing.Size(35, 13);
+            this.labelDescription.TabIndex = 2;
+            this.labelDescription.Text = "label1";
+            this.labelDescription.Click += new System.EventHandler(this.labelDescription_Click);
             // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 261);
-            this.Controls.Add(this.listBoxApps);
+            this.ClientSize = new System.Drawing.Size(583, 391);
+            this.Controls.Add(this.labelDescription);
             this.Name = "MainWindow";
-            this.Text = "MainWindow";
-            this.Activated += new System.EventHandler(this.MainWindow_Activated);
-            this.Load += new System.EventHandler(this.Form1_Load);
-            this.Resize += new System.EventHandler(this.Form1_Resize);
+            this.Text = "Alt Tab Helper";
+            this.Load += new System.EventHandler(this.MainWindow_Load);
+            this.Resize += new System.EventHandler(this.MainWindow_Resize);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.ListBox listBoxApps;
+        private System.Windows.Forms.Label labelDescription;
     }
 }
 

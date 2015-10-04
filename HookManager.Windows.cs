@@ -3,7 +3,8 @@ using System.Runtime.InteropServices;
 
 namespace AltTabHelperV2
 {
-    public static partial class Hook
+    // most of this code is from http://www.codeproject.com/Articles/7294/Processing-Global-Mouse-and-Keyboard-Hooks-in-C
+    public static partial class HookManager
     {
         #region Windows constants
 
