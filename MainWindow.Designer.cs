@@ -1,4 +1,4 @@
-﻿namespace AltTabHelperV2
+namespace AltTabHelperV2
 {
     partial class MainWindow
     {

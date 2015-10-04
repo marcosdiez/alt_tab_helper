@@ -14,17 +14,18 @@ namespace AltTabHelperV2
     public partial class MainWindow : Form
     {
 
+        public static MainWindow self;
 
         public MainWindow()
         {
             InitializeComponent();
+            self = this;
             this.WindowState = FormWindowState.Minimized;
-            mimimizeMe();
+            MimimizeMe();
         }
 
         private void MainWindow_Load(object sender, EventArgs e)
         {
-
             labelDescription.Text =
                 @"
 
@@ -50,11 +51,16 @@ The app is open source: https://github.com/marcosdiez/alt_tab_helper
 
         private void myNotifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
+            RestoreMe();
+        }
+
+        public void RestoreMe()
+        {
             this.Show();
             this.WindowState = FormWindowState.Normal;
         }
 
-        private void mimimizeMe()
+        public void MimimizeMe()
         {
             myNotifyIcon.Visible = true;
             this.ShowInTaskbar = false;
@@ -71,7 +77,7 @@ The app is open source: https://github.com/marcosdiez/alt_tab_helper
         {
             if (FormWindowState.Minimized == this.WindowState)
             {
-                mimimizeMe();
+                MimimizeMe();
             }
 
             else if (FormWindowState.Normal == this.WindowState)

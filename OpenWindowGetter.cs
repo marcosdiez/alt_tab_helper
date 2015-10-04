@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,8 +29,9 @@ namespace AltTabHelperV2
             {
                 if (hWnd == shellWindow) return true;
                 if (!IsWindowVisible(hWnd)) return true;
+                if (GetWindowTextLength(hWnd) == 0) return true;
 
-                var processName = GetProcessNameFromHwnd(hWnd, builder2);
+                var processName = GetModuleFileName(hWnd, builder2);
 
                 if (processName == currentProcess)
                 {
@@ -43,7 +44,20 @@ namespace AltTabHelperV2
             return windowList;
         }
 
-        private static string GetProcessNameFromHwnd(HWND hWnd, StringBuilder builder2)
+        public static string GetProcessInfo(HWND hWnd)
+        {
+            uint pid;
+            GetWindowThreadProcessId(hWnd, out pid);
+            var length = GetWindowTextLength(hWnd);
+            var output = new StringBuilder(1000);
+            var output2 = new StringBuilder(1000);
+            GetWindowText(hWnd, output, length + 1);
+
+            return String.Format("hWnd: {0} - pid: {1} - exe: {2} - {3}", hWnd.ToInt64(), pid, GetModuleFileName(hWnd, output2), output);
+
+
+        }
+        private static string GetModuleFileName(HWND hWnd, StringBuilder builder2)
         {
             uint pid;
             GetWindowThreadProcessId(hWnd, out pid);
@@ -129,8 +143,7 @@ namespace AltTabHelperV2
         public static extern bool SetForegroundWindow(IntPtr hWnd);
 
         [DllImport("user32.dll", SetLastError = true)]
-        private static extern int SetActiveWindow(IntPtr hWnd);
-
+        public static extern int SetActiveWindow(IntPtr hWnd);
 
         // The return value is the handle to the active window attached to the calling thread's message queue. Otherwise, the return value is NULL. 
         [DllImport("user32.dll", SetLastError = true)]
