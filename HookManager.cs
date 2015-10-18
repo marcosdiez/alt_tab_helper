@@ -57,7 +57,7 @@ namespace AltTabHelperV2
                 if ((wParam == WM_SYSKEYDOWN)) // raise KeyDown with alt pressed
                 {
                     //read structure KeyboardHookStruct at lParam
-                    KeyboardHookStruct MyKeyboardHookStruct = (KeyboardHookStruct)Marshal.PtrToStructure(lParam, typeof(KeyboardHookStruct));
+                    var MyKeyboardHookStruct = (KeyboardHookStruct)Marshal.PtrToStructure(lParam, typeof(KeyboardHookStruct));
 
                     if ((Keys)MyKeyboardHookStruct.VirtualKeyCode == Keys.Oem3) // 0xC0 -> `~
                     {
