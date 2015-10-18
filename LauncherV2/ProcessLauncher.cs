@@ -13,6 +13,11 @@ namespace LauncherV2
 {
     class ProcessLauncher
     {
+        /// <summary>
+        /// Unfortunatelly Windows does not allow AltTabHelperV2 to work properly unless it's running under a debugger.
+        /// So This app does the trick
+        /// </summary>
+
         public static void LaunchAsThread()
         {
             (new Thread(ProcessLauncher.LaunchProcess)).Start();
