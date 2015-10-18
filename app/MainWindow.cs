@@ -38,6 +38,9 @@ You can of course hit Shift to switch the focus on the opposite order.
 
 The app is open source: https://github.com/marcosdiez/alt_tab_helper
 
+Unfortunatelly, due to some restrictions on Windows, this app just work properly if started by a debugger.
+Therefore we recomend it being launched via LauncherV2.exe instead of directly.
+
 ";
 
             HookManager.EnsureSubscribedToGlobalKeyboardEvents();

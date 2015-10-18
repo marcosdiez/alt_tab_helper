@@ -1,6 +1,4 @@
 using System;
-using System.Diagnostics;
-using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,17 +6,22 @@ using System.Threading.Tasks;
 using Microsoft.Samples.Debugging.CorDebug;
 using Microsoft.Samples.Debugging.MdbgEngine;
 using System.Threading;
+using System.IO;
+using System.Windows.Forms;
 
-namespace Launcher
+namespace LauncherV2
 {
-    class Program
+    class ProcessLauncher
     {
-        static void Main(string[] args)
+        public static void LaunchAsThread()
         {
-            var filename = getFilename();
+            (new Thread(ProcessLauncher.LaunchProcess)).Start();
+        }
 
+        public static void LaunchProcess()
+        {
+            var filename = GetFilename();
             Console.WriteLine("Launching " + filename);
-
 
             var stop = new ManualResetEvent(false);
             var engine = new MDbgEngine();
@@ -37,11 +40,13 @@ namespace Launcher
 
 
             //var p = Process.Start(filename);
-            Console.WriteLine("Done...");
+            Console.WriteLine("Launched...");
             stop.WaitOne();
+            Application.Exit();
         }
 
-        static string getFilename()
+
+        static string GetFilename()
         {
             var theFile = "AltTabHelperV2.exe";
 
