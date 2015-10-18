@@ -74,6 +74,7 @@
     <Compile Include="HookManager.cs" />
     <Compile Include="HookManager.Structures.cs" />
     <Compile Include="HookManager.Windows.cs" />
+    <Compile Include="ProcessLauncher.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProcessKeyboardEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

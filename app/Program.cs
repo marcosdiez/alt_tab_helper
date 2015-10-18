@@ -14,9 +14,17 @@ namespace AltTabHelperV2
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainWindow());
+            if (ProcessLauncher.AmIBeingDebugged())
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new MainWindow());
+            }
+            else
+            {
+                ProcessLauncher.LaunchProcessWithAttachedDebuggerInNewThread();
+            }
+
         }
     }
 }

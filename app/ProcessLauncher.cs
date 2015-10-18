@@ -10,7 +10,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Diagnostics;
 
-namespace LauncherV2
+namespace AltTabHelperV2
 {
     class ProcessLauncher
     {
@@ -19,24 +19,17 @@ namespace LauncherV2
         /// So This app does the trick
         /// </summary>
 
-        public static void LaunchAsThread()
+        public static bool AmIBeingDebugged()
         {
-
-            var x = System.AppDomain.CurrentDomain.FriendlyName;
-            var z = Process.GetCurrentProcess().ProcessName;
-
-            blah(x, z);
-              (new Thread(ProcessLauncher.LaunchProcess)).Start();
+            return System.Diagnostics.Debugger.IsAttached;
         }
 
-        public static void blah(String x, String y)
+        public static void LaunchProcessWithAttachedDebuggerInNewThread()
         {
-            Console.Write(x);
-            Console.WriteLine(y);
-            return;
+              (new Thread(ProcessLauncher.LaunchProcessWithAttachedDebugger)).Start();
         }
 
-        public static void LaunchProcess()
+        public static void LaunchProcessWithAttachedDebugger()
         {
             var filename = GetFilename();
             Console.WriteLine("Launching " + filename);
@@ -66,22 +59,39 @@ namespace LauncherV2
 
         static string GetFilename()
         {
-            var theFile = "AltTabHelperV2.exe";
-
-            var probablePaths = new string[] { "", "../../../app/bin/Release/", "../../../app/bin/Debug/" };
-
-            foreach (var probablePath in probablePaths)
+            var possibleNames = new string[] { System.AppDomain.CurrentDomain.FriendlyName, Process.GetCurrentProcess().ProcessName, "AltTabHelperV2.exe" };
+            foreach (var possibleName in possibleNames)
             {
-                var probableFile = probablePath.Replace("/", "\\") + theFile;
-                if (File.Exists(probableFile))
+             
+                if (File.Exists(possibleName))
                 {
-                    return probableFile;
+                    return possibleName;
                 }
 
-
+                
             }
-            Console.Write("File not found: " + theFile);
             return null;
+
+            //var x = System.AppDomain.CurrentDomain.FriendlyName;
+            //var z = Process.GetCurrentProcess().ProcessName;
+
+            //return System.AppDomain.CurrentDomain.FriendlyName;
+            //var theFile = "AltTabHelperV2.exe";
+
+            //var probablePaths = new string[] { "", "../../../app/bin/Release/", "../../../app/bin/Debug/" };
+
+            //foreach (var probablePath in probablePaths)
+            //{
+            //    var probableFile = probablePath.Replace("/", "\\") + theFile;
+            //    if (File.Exists(probableFile))
+            //    {
+            //        return probableFile;
+            //    }
+
+
+            //}
+            //Console.Write("File not found: " + theFile);
+            //return null;
         }
     }
 }
