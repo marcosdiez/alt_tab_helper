@@ -16,6 +16,8 @@ from which most of the code was based.
 This program was developed and tested on Visual Studio 2015 with Windows 10. Please email me marcos AT unitron DOT com DOT br if it does not work on your platform.
 
 Due to techinicallities on how Microsoft Windows works, one can only switch focus of other windows while not being on focus if under running under a debugger.
-Therefore is this app is not launched via a debugger, it will relaunch itself via a debugger.
+
+Therefore, whenever the app is normally launched it will actually pretent to be a debugger relauch itself in debug mode. 
+This is a limitation on Windows and I could not think of any other way to override it.
 
 More info can be found here: http://www.codeproject.com/Tips/76427/How-to-bring-window-to-top-with-SetForegroundWindo 
