@@ -9,16 +9,70 @@ namespace AltTabHelperV2
     using System.Runtime.InteropServices;
     using HWND = IntPtr;
 
+    
+
     /// <summary>Contains functionality to get all the open windows.</summary>
     public static class OpenWindowGetter
     {
+        public static int GetZOrder(IntPtr hWnd, GetWindowParameters parm = GetWindowParameters.GW_HWNDPREV)
+        {
+            var z = 0;
+            for (var h = hWnd; h != IntPtr.Zero; h = GetWindow(h, (int) parm)) z++;
+            return z;
+        }
 
-        // thank you, http://www.tcx.be/blog/2006/list-open-windows/ 
 
         private const int PROCESS_QUERY_INFORMATION = 0x0400;
         private const int PROCESS_VM_READ = 0x0010;
 
-        public static List<HWND> GetOpenWindows()
+        public static int[] GetZOrder(params IntPtr[] hWnds)
+        {
+            // http://stackoverflow.com/questions/825595/how-to-get-the-z-order-in-windows
+
+            var z = new int[hWnds.Length];
+            for (var i = 0; i < hWnds.Length; i++) z[i] = -1;
+
+            var index = 0;
+            var numRemaining = hWnds.Length;
+            EnumWindows((wnd, param) =>
+            {
+                var searchIndex = Array.IndexOf(hWnds, wnd);
+                if (searchIndex != -1)
+                {
+                    z[searchIndex] = index;
+                    numRemaining--;
+                    if (numRemaining == 0) return false;
+                }
+                index++;
+                return true;
+            }, 0);
+
+            return z;
+        }
+
+
+
+        public static List<HWND> GetAllOpenWindows()
+        {
+            var shellWindow = GetShellWindow();
+            var windowList = new List<HWND>();
+
+            EnumWindows(delegate (HWND hWnd, int lParam)
+            {
+                if (hWnd == shellWindow) return true;
+                if (!IsWindowVisible(hWnd)) return true;
+                if (GetWindowTextLength(hWnd) == 0) return true;
+               
+                windowList.Add(hWnd);
+
+                return true;
+
+            }, 0);
+
+            return windowList;
+        }
+
+        public static List<HWND> GetOpenWindowsWithTheSameNameAsTheCurrentProcess()
         {
             var shellWindow = GetShellWindow();
             var windowList = new List<HWND>();
@@ -44,7 +98,29 @@ namespace AltTabHelperV2
             return windowList;
         }
 
-        public static string GetProcessInfo(HWND hWnd)
+        public static List<IntPtr> GetInterestingOpenWindows()
+        {
+            var shellWindow = GetShellWindow();
+            var windowList = new List<IntPtr>();
+
+            EnumWindows(delegate (IntPtr hWnd, int lParam)
+            {
+                if (hWnd == shellWindow) return true;
+                if (!IsWindowVisible(hWnd)) return true;
+                if (GetWindowTextLength(hWnd) == 0) return true;
+                if (IsZoomed(hWnd)) return true;
+                if (IsIconic(hWnd)) return true;
+
+                windowList.Add(hWnd);
+
+                return true;
+
+            }, 0);
+
+            return windowList;
+        }
+
+        public static string GetProcessInfo(IntPtr hWnd)
         {
             uint pid;
             GetWindowThreadProcessId(hWnd, out pid);
@@ -52,11 +128,29 @@ namespace AltTabHelperV2
             var output = new StringBuilder(1000);
             var output2 = new StringBuilder(1000);
             GetWindowText(hWnd, output, length + 1);
+            var zOrder = GetZOrder(hWnd);
+            var desktop = "";
+            try {
+                desktop = GetWindowDesktopId(hWnd).ToString(); ;
+            }catch(Exception e) { }
 
-            return String.Format("hWnd: {0} - pid: {1} - exe: {2} - {3}", hWnd.ToInt64(), pid, GetModuleFileName(hWnd, output2), output);
+            var isMaximized = IsZoomed(hWnd);
 
-
+            return String.Format("zIndex: {5} - virtualDesktopGuid: {6} - hWnd: {0} - pid: {1} - exe: {2} - {3} {4}",
+                hWnd.ToInt64(), pid, GetModuleFileName(hWnd, output2),
+                output,
+                isMaximized ? " MAXIMIZED" : "",
+                zOrder,
+                desktop
+                );
         }
+
+        public static Guid? GetWindowDesktopId(HWND hWnd)
+        {
+            var blah = new VirtualDesktopManager();
+            return blah.GetWindowDesktopId(hWnd);
+        }
+
         private static string GetModuleFileName(HWND hWnd, StringBuilder builder2)
         {
             uint pid;
@@ -94,6 +188,22 @@ namespace AltTabHelperV2
         }
 
         private delegate bool EnumWindowsProc(HWND hWnd, int lParam);
+
+
+        // https://msdn.microsoft.com/en-us/library/windows/desktop/ms633515.aspx
+        public enum GetWindowParameters
+        {
+            GW_CHILD = 5,
+            GW_ENABLEDPOPUP = 6,
+            GW_HWNDFIRST = 0,
+            GW_HWNDLAST = 1,
+            GW_HWNDNEXT = 2,
+            GW_HWNDPREV = 3,
+            GW_OWNER = 4
+        }
+
+        [DllImport("USER32.DLL")]
+        public static extern IntPtr GetWindow(IntPtr hwnd, int wFlag);
 
         [DllImport("USER32.DLL")]
         private static extern bool EnumWindows(EnumWindowsProc enumFunc, int lParam);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -13,7 +13,6 @@ namespace AltTabHelperV2
 {
     public partial class MainWindow : Form
     {
-
         public static MainWindow self;
 
         public MainWindow()
@@ -28,13 +27,17 @@ namespace AltTabHelperV2
         {
             labelDescription.Text =
                 @"
+This app improves Alt Tab. 
 
-This app improves Alt Tab. It basically hooks on Alt + ` [the key left to 1 and above Tab] 
+It basically hooks on Alt + ` [the key left to 1 and above Tab] 
 and switches the focus of apps from the same executable.
 
 It work great to switch between command prompts, terminals, browsers, word processors, etc.... 
 
 You can of course hit Shift to switch the focus on the opposite order.
+
+If you use the right tab and the focused window is Maximized, 
+it will bring to front all the non maximized windows in the same desktop.
 
 The app is open source: https://github.com/marcosdiez/alt_tab_helper
 
@@ -96,6 +99,21 @@ So if you just run this app, it will relaunch and debug itself :)
             }
         }
 
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var windowsList = OpenWindowGetter.GetInterestingOpenWindows();
+            var output = new StringBuilder();
+            foreach (var window in windowsList)
+            {
+                output.Append(OpenWindowGetter.GetProcessInfo(window) + "\n");
+            }
+            MessageBox.Show(output.ToString());
+        }
 
+        private void VDCheckTimer_Tick(object sender, EventArgs e)
+        {
+            VirtualDesktopIndexer.VDCheckTimer_Tick();
+            
+        }
     }
 }

@@ -117,6 +117,11 @@ namespace AltTabHelperV2
         private const int WM_SYSKEYUP = 0x105;
 
         private const byte VK_SHIFT = 0x10;
+        private const byte VK_CONTROL = 0x11;
+
+        private const byte VK_LCONTROL = 0xA2; // Left CONTROL Key
+        private const byte VK_RCONTROL = 0xA3; // Right CONTROL key
+
         private const byte VK_CAPITAL = 0x14;
         private const byte VK_NUMLOCK = 0x90;
 

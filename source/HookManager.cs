@@ -7,6 +7,7 @@ using System.Windows.Forms;
 
 namespace AltTabHelperV2
 {
+
     // most of this code is from http://www.codeproject.com/Articles/7294/Processing-Global-Mouse-and-Keyboard-Hooks-in-C
     public partial class HookManager
     {
@@ -17,6 +18,8 @@ namespace AltTabHelperV2
         /// until it is guaranteed that they will never be called.
         /// </summary>
         private static HookProc s_KeyboardDelegate;
+
+        public static bool workToBeDone = false;
 
         private static int s_KeyboardHookHandle = 0;
 
@@ -61,8 +64,16 @@ namespace AltTabHelperV2
 
                     if ((Keys)MyKeyboardHookStruct.VirtualKeyCode == Keys.Oem3) // 0xC0 -> `~
                     {
-                        var isDownShift = ((GetKeyState(VK_SHIFT) & 0x80) == 0x80 ? true : false);
-                        ProcessKeyboardEvent.EventIsTriggered(isDownShift);
+                        var isDownShift = (GetKeyState(VK_SHIFT) & 0x8000) == 0x8000;
+                        var isDownCtrl = (GetKeyState(VK_CONTROL) & 0x8000) == 0x8000;
+                        if (isDownCtrl)
+                        {
+                            workToBeDone = true;
+                            //ProcessKeyboardEvent.ControlEventIsTriggered(isDownShift);
+                        }
+                        else {
+                            ProcessKeyboardEvent.EventIsTriggered(isDownShift);
+                        }
                         return -1;
                     }
                 }

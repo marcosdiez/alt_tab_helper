@@ -10,6 +10,9 @@ One can use it to switch command prompts, terminal emulators, folders in windows
 
 If one pushes Alt + Shift + `, than the reverse order will be used.
 
+If you use the right tab and the focused window is Maximized,
+it will bring to front all the non maximized windows in the same desktop.
+
 Many thanks to http://www.codeproject.com/Articles/7294/Processing-Global-Mouse-and-Keyboard-Hooks-in-C and http://www.tcx.be/blog/2006/list-open-windows/ ,
 from which most of the code was based.
 
@@ -17,7 +20,7 @@ This program was developed and tested on Visual Studio 2015 with Windows 10. Ple
 
 Due to techinicallities on how Microsoft Windows works, one can only switch focus of other windows while not being on focus if under running under a debugger.
 
-Therefore, whenever the app is normally launched it will actually pretent to be a debugger relauch itself in debug mode. 
+Therefore, whenever the app is normally launched it will actually pretent to be a debugger relauch itself in debug mode.
 This is a limitation on Windows and I could not think of any other way to override it.
 
-More info can be found here: http://www.codeproject.com/Tips/76427/How-to-bring-window-to-top-with-SetForegroundWindo 
+More info can be found here: http://www.codeproject.com/Tips/76427/How-to-bring-window-to-top-with-SetForegroundWindo
