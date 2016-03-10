@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AltTabHelperV2
@@ -18,8 +19,6 @@ namespace AltTabHelperV2
         /// until it is guaranteed that they will never be called.
         /// </summary>
         private static HookProc s_KeyboardDelegate;
-
-        public static bool workToBeDone = false;
 
         private static int s_KeyboardHookHandle = 0;
 
@@ -51,33 +50,39 @@ namespace AltTabHelperV2
         }
 
 
+        
+
         private static int KeyboardHookProc(int nCode, Int32 wParam, IntPtr lParam)
         {
             //indicates if any of underlaing events set e.Handled flag
             if (nCode >= 0)
             {
-                // wParam == WM_KEYDOWN || 
                 if ((wParam == WM_SYSKEYDOWN)) // raise KeyDown with alt pressed
                 {
                     //read structure KeyboardHookStruct at lParam
-                    var MyKeyboardHookStruct = (KeyboardHookStruct)Marshal.PtrToStructure(lParam, typeof(KeyboardHookStruct));
+                    var MyKeyboardHookStruct = (KeyboardHookStruct)
+                        Marshal.PtrToStructure(lParam, typeof(KeyboardHookStruct));
 
                     if ((Keys)MyKeyboardHookStruct.VirtualKeyCode == Keys.Oem3) // 0xC0 -> `~
                     {
-                        var isDownShift = (GetKeyState(VK_SHIFT) & 0x8000) == 0x8000;
+                        
                         var isDownCtrl = (GetKeyState(VK_CONTROL) & 0x8000) == 0x8000;
                         if (isDownCtrl)
                         {
-                            workToBeDone = true;
-                            //ProcessKeyboardEvent.ControlEventIsTriggered(isDownShift);
+                            Task.Run((Action)
+                                ProcessKeyboardEvent.PutNonMaximizedWindowsInThisDesktopOnTop
+                                );
                         }
                         else {
-                            ProcessKeyboardEvent.EventIsTriggered(isDownShift);
+                            var isDownShift = (GetKeyState(VK_SHIFT) & 0x8000) == 0x8000;
+                            Task.Run(() =>
+                            {
+                                ProcessKeyboardEvent.GiveFocusToNextSimilarWindow(isDownShift);
+                            });
                         }
                         return -1;
                     }
                 }
-
             }
 
             //forward to other application

@@ -12,42 +12,25 @@ namespace AltTabHelperV2
 {
     class ProcessKeyboardEvent
     {
-        public static void ControlEventIsTriggered(bool isShiftDown)
+        public static void PutNonMaximizedWindowsInThisDesktopOnTop()
         {
-            var output = "";
-
-            output += ("-- AAxCONTROL EVENT TRIGGERED ---");
             var foregroundWindow = OpenWindowGetter.GetForegroundWindow();
             if (OpenWindowGetter.IsZoomed(foregroundWindow))
             {
-                output += ("-- Janela em Foco Está maximizada ---");
-                var listOfOpenWindows = OpenWindowGetter.GetAllOpenWindows().OrderBy(x => x.ToInt64()).ToArray();
-                for (var i = 0; i < listOfOpenWindows.Length; i++)
+                var currentDesktop = OpenWindowGetter.GetWindowDesktopId(foregroundWindow);
+                var listOfOpenWindows = OpenWindowGetter.GetInterestingOpenWindows();
+                foreach (var thisWindow in listOfOpenWindows)
                 {
-                    var thisWindow = listOfOpenWindows[i];
-
-                    Console.WriteLine("Chaning the size of " +  OpenWindowGetter.GetProcessInfo(thisWindow));
-
-                    //if (thisWindow != foregroundWindow &&
-                    //    !OpenWindowGetter.IsIconic(thisWindow) &&
-                    //    !OpenWindowGetter.IsZoomed(thisWindow) 
-                    //    )
-                    //{
-                    //    Console.WriteLine("Chaning the size of " + OpenWindowGetter.GetProcessInfo(thisWindow));
-                    //    // the window is not the main, is not maximized nor minimized;
-                    //    OpenWindowGetter.SetActiveWindow(thisWindow);
-                    //    OpenWindowGetter.SetForegroundWindow(thisWindow);
-                    //}
+                    if (currentDesktop == OpenWindowGetter.GetWindowDesktopId(thisWindow))
+                    {
+                        OpenWindowGetter.SetActiveWindow(thisWindow);
+                        OpenWindowGetter.SetForegroundWindow(thisWindow);
+                    }
                 }
-                output += ("-- BBxCONTROL EVENT TRIGGERED ---");
-                File.WriteAllText("z:\\tmp\\output.txt", output);
             }
-            
-
         }
 
-
-        public static void EventIsTriggered(bool isShiftDown)
+        public static void GiveFocusToNextSimilarWindow(bool isShiftDown)
         {
           
             var listOfOpenWindows = OpenWindowGetter.GetOpenWindowsWithTheSameNameAsTheCurrentProcess().OrderBy(x => x.ToInt64()).ToArray();

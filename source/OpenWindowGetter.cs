@@ -132,7 +132,7 @@ namespace AltTabHelperV2
             var desktop = "";
             try {
                 desktop = GetWindowDesktopId(hWnd).ToString(); ;
-            }catch(Exception e) { }
+            }catch(Exception) { }
 
             var isMaximized = IsZoomed(hWnd);
 

@@ -33,7 +33,6 @@ namespace AltTabHelperV2
             this.labelDescription = new System.Windows.Forms.Label();
             this.myNotifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.button1 = new System.Windows.Forms.Button();
-            this.VDCheckTimer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // labelDescription
@@ -63,12 +62,6 @@ namespace AltTabHelperV2
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // VDCheckTimer
-            // 
-            this.VDCheckTimer.Enabled = true;
-            this.VDCheckTimer.Interval = 1000;
-            this.VDCheckTimer.Tick += new System.EventHandler(this.VDCheckTimer_Tick);
-            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -90,7 +83,6 @@ namespace AltTabHelperV2
         private System.Windows.Forms.Label labelDescription;
         private System.Windows.Forms.NotifyIcon myNotifyIcon;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Timer VDCheckTimer;
 
    
     }
