@@ -77,7 +77,7 @@ namespace AltTabHelperV2
             var shellWindow = GetShellWindow();
             var windowList = new List<HWND>();
             var currentProcess = GetCurrentProcessName();
-            var builder2 = new StringBuilder(1000);
+            var processNameBuilder = new StringBuilder(1000);
 
             EnumWindows(delegate (HWND hWnd, int lParam)
             {
@@ -85,7 +85,7 @@ namespace AltTabHelperV2
                 if (!IsWindowVisible(hWnd)) return true;
                 if (GetWindowTextLength(hWnd) == 0) return true;
 
-                var processName = GetModuleFileName(hWnd, builder2);
+                var processName = GetModuleFileName(hWnd, processNameBuilder);
 
                 if (processName == currentProcess)
                 {
@@ -151,15 +151,18 @@ namespace AltTabHelperV2
             return blah.GetWindowDesktopId(hWnd);
         }
 
-        private static string GetModuleFileName(HWND hWnd, StringBuilder builder2)
+        private static string GetModuleFileName(HWND hWnd, StringBuilder processNameBuilder)
         {
             uint pid;
             GetWindowThreadProcessId(hWnd, out pid);
 
             var newHandle = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, false, pid);
-            GetModuleFileNameEx(newHandle, IntPtr.Zero, builder2, builder2.Capacity);
+
+            processNameBuilder.Clear();
+            GetModuleFileNameEx(newHandle, IntPtr.Zero, processNameBuilder, processNameBuilder.Capacity);
+
             CloseHandle(newHandle);
-            return builder2.ToString();
+            return processNameBuilder.ToString();
         }
 
         private static string GetCurrentProcessName()
